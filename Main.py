@@ -1,18 +1,19 @@
 import time
 from Launch import launch_game, daily_roulette, apology, close_news, movie_news, boss_weaknesses, boss_weaknesses_ok
 from ADB import set_tcpip_mode_without_device_check, connect_device
-from Gacha import process_gacha, ad_free_gacha_chara_path, ad_free_gacha_chara2_path, plus_10_path,gacha_result_path
+from Gacha import (process_gacha, ad_free_gacha_chara_path, ad_free_gacha_chara2_path, plus_10_path,
+                   gacha_result_path, scroll_right_to_left, tap_gacha_button)
 
 IP_ADDRESS = "192.168.0.103"
 
 if __name__ == "__main__":
-
+    """
     # ADBサーバーの再起動
     set_tcpip_mode_without_device_check()
     connect_device("192.168.0.103")  # 接続したいIPアドレスを指定
 
 #===================================================================================
-
+    
     # 白猫プロジェクトを起動
     print("起動処理を開始します。")
     launch_game()
@@ -75,13 +76,28 @@ if __name__ == "__main__":
 
     print("デイリーミッションが終了しました。\n")
     time.sleep(1)
-
+"""
     # ===================================================================================
 
     print("ガチャを回す処理を開始します。\n")
     time.sleep(1)
 
+    if tap_gacha_button():
+        print("ガチャボタンをタップしました")
+    else:
+        print("ガチャボタンが見つかりませんでした")
+
+    time.sleep(2)  # タップ後に少し待機
+
     process_gacha(ad_free_gacha_chara_path, ad_free_gacha_chara2_path, plus_10_path, gacha_result_path)
+
+    # スクロールを実行し、成功するまで再試行
+    while not scroll_right_to_left():
+        print("画像が見つかりませんでした。再試行します...")
+        time.sleep(2)  # 画像が見つからなかった場合、2秒待機して再試行
+
+    print("スクロールが完了しました")
+    time.sleep(1)  # スクロール後に少し待機
 
     print("ガチャを回す処理が終了しました。\n")
     time.sleep(1)
