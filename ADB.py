@@ -8,6 +8,7 @@ device_id = "192.168.0.103:5555"  # Wi-Fi接続のIPアドレスとポート番�
 adb_command = "adb"
 port = 5555  # 使用するポート番号
 
+
 def set_tcpip_mode_without_device_check(port=5555):
     """直接TCP/IPモードに設定する関数"""
     try:
@@ -70,18 +71,3 @@ def capture_screen():
     subprocess.run([adb_path, "-s", device_id, "pull", "-q", "/sdcard/screen.png", "screen.png"])
 
     return os.path.exists("screen.png")
-
-# スクロール操作を実行する関数
-def scroll_on_device(start_x, start_y, end_x, end_y, duration=300):
-    """
-    start_x, start_y: スクロール開始の座標
-    end_x, end_y: スクロール終了の座標
-    duration: スクロールにかける時間（ミリ秒単位）
-    """
-    if not check_device_connected():
-        return False
-    # adbコマンドでドラッグ操作（スクロール）を実行
-    subprocess.run(
-        [adb_path, "-s", device_id, "shell", "input", "swipe", str(start_x), str(start_y), str(end_x), str(end_y),
-         str(duration)])
-    return True
