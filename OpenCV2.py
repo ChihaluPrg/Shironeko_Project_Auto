@@ -27,7 +27,6 @@ def find_template_position(template_path, threshold=0.8):
     else:
         return None
 
-
 # 実機上でタッチ操作を実行する関数
 def tap_on_device(x, y):
     if not check_device_connected():
@@ -35,6 +34,20 @@ def tap_on_device(x, y):
     # adbコマンドでタッチ操作を実行
     subprocess.run([adb_path, "-s", device_id, "shell", f"input tap {x} {y}"])
     return True
+
+def tap_button_with_retry(template_path, wait_time=2):
+    """
+    ボタンが見つからない場合、見つかるまで再試行する関数
+    """
+    while True:
+        position = find_template_position(template_path)
+        if position:
+            tap_on_device(position[0], position[1])
+            time.sleep(1)  # 少し待機
+            return True
+        else:
+            print(f"{template_path} が見つかりませんでした。再試行します...")
+            time.sleep(wait_time)  # 再試行の前に待機
 
 # スクロール操作を実行する関数
 def scroll_on_device(start_x, start_y, end_x, end_y, duration=300):
