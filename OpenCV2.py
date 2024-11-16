@@ -49,6 +49,28 @@ def tap_button_with_retry(template_path, wait_time=2):
             print(f"{template_path} が見つかりませんでした。再試行します...")
             time.sleep(wait_time)  # 再試行の前に待機
 
+def tap_button_with_retry_restricted(template_path, wait_time=2, max_retries=3):
+    """
+    ボタンが見つからない場合、指定された回数まで再試行する関数。
+    見つからない場合はスキップ。
+    """
+    retries = 0  # 試行回数をカウントする
+
+    while retries < max_retries:
+        position = find_template_position(template_path)
+        if position:
+            tap_on_device(position[0], position[1])
+            time.sleep(1)  # 少し待機
+            return True
+        else:
+            retries += 1
+            print(f"{template_path} が見つかりませんでした。再試行します... (試行回数: {retries}/{max_retries})")
+            time.sleep(wait_time)  # 再試行の前に待機
+
+    print(f"{template_path} が見つからないため、スキップします。")
+    return False
+
+
 # スクロール操作を実行する関数
 def scroll_on_device(start_x, start_y, end_x, end_y, duration=300):
     """
