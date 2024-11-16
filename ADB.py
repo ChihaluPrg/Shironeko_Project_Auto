@@ -4,7 +4,7 @@ import time
 import os
 
 adb_path = r"C:\Program Files\BlueStacks_nxt\adb.exe"
-device_id = "192.168.0.103:5555"  # Wi-Fi接続のIPアドレスとポート番号を指定
+device_id = ""  # Wi-Fi接続のIPアドレスとポート番号を指定
 adb_command = "adb"
 port = 5555  # 使用するポート番号
 
