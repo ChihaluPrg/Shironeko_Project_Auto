@@ -1,10 +1,7 @@
 import time
-from Launch import launch_game, daily_roulette, apology, close_news, movie_news, boss_weaknesses, boss_weaknesses_ok
-from ADB import set_tcpip_mode_without_device_check, connect_device
-from Gacha import (process_gacha, ad_free_gacha_chara_path, ad_free_gacha_chara2_path, plus_10_path,
-                   gacha_result_path, scroll_right_to_left, tap_gacha_button)
 
-IP_ADDRESS = "192.168.0.103"
+from Gacha import (process_gacha, scroll_until_gacha_found, tap_gacha_button, process_buki_gacha,
+                   tap_free_gacha_no_ad)
 
 if __name__ == "__main__":
     """
@@ -69,39 +66,55 @@ if __name__ == "__main__":
     print("起動処理が終了しました。\n")
     time.sleep(1)
 
-    # ===================================================================================
+# ===================================================================================
 
     print("デイリーミッションを開始します。\n")
     time.sleep(1)
+
+    print("ミッション報酬受け取り、広告ジュエル回収を行います\n")
+    time.sleep(1)
+
+    # missionボタンをタップ
+    if tap_mission_button(mission_template_path, no_mission_template_path):
+        # mission_get～mission_daily_roulette の繰り返し処理
+        collect_mission_rewards()
+
+        # mission_watch～mission_ok の繰り返し処理
+        watch_and_close_ads()
+
+        # close_missionボタンをタップして終了
+        close_mission()
 
     print("デイリーミッションが終了しました。\n")
     time.sleep(1)
 """
     # ===================================================================================
 
-    print("ガチャを回す処理を開始します。\n")
+    print("デイリーミッションのクエスト周回の処理を開始します")
+
+    print("デイリーミッションのクエスト周回の処理をが狩猟しました\n")
+
+    print("ガチャを回す処理を開始します")
     time.sleep(1)
 
-    if tap_gacha_button():
-        print("ガチャボタンをタップしました")
-    else:
-        print("ガチャボタンが見つかりませんでした")
+    tap_gacha_button()
 
-    time.sleep(2)  # タップ後に少し待機
+    # 広告視聴の無料キャラガチャを回す
+    process_gacha()
 
-    process_gacha(ad_free_gacha_chara_path, ad_free_gacha_chara2_path, plus_10_path, gacha_result_path)
+    # ガチャの種類を変えるためにスクロールを実行
+    scroll_until_gacha_found()
 
-    # スクロールを実行し、成功するまで再試行
-    while not scroll_right_to_left():
-        print("画像が見つかりませんでした。再試行します...")
-        time.sleep(2)  # 画像が見つからなかった場合、2秒待機して再試行
-
-    print("スクロールが完了しました")
-    time.sleep(1)  # スクロール後に少し待機
-
-    print("ガチャを回す処理が終了しました。\n")
+    # 広告なしの無料ガチャを回す
+    tap_free_gacha_no_ad()
     time.sleep(1)
 
+    # 広告視聴の無料武器ガチャを実行
+    process_buki_gacha()
+    time.sleep(1)
+
+    print("ガチャを回す処理が終了しました\n")
+    time.sleep(2)
 
 
 
