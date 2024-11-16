@@ -97,6 +97,7 @@ if __name__ == "__main__":
     print("ガチャを回す処理を開始します")
     time.sleep(1)
 
+    #ガチャの画面に移動
     tap_gacha_button()
 
     # 広告視聴の無料キャラガチャを回す
