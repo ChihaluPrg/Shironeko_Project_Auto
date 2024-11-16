@@ -15,7 +15,7 @@ def close_ad():
         ad_found = False  # 1回の試行内で広告が見つかったかどうか
 
         # 広告閉じボタンを1回目または再試行で確認
-        for i in range(1, 16): # (1, 17)でad_close1～ad_close16までが表示
+        for i in range(1, 16):
             ad_close_template_path = f"img/ad_close{i}.jpg"
             position = find_template_position(ad_close_template_path)
             if position:
