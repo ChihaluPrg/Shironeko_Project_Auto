@@ -15,70 +15,198 @@ DURATION = 430  # スクロールの時間
 THRESHOLD = 0.8  # 画像認識の閾値
 
 #無料ガチャ
-free_gacha_path = "img/free_gacha.jpg"
-free_gacha_25_path = "img/gacha_25.jpg"
-free_gacha_ok_template_path = "img/gacha_ok.jpg"
+gacha_ok_template_path = "img/gacha_ok.jpg"
 plus10_template_path = "img/+10.jpg"
-free_gacha_result_template_path = "img/gacha_result.jpg"
+gacha_result_template_path = "img/gacha_result.jpg"
+free_gacha_template_path = "img/free_gacha.jpg"
+gacha_25_template_path = "img/gacha_25.jpg"
 
-#広告視聴の無料ガチャ
-ad_free_gacha_chara_path = "img/ad_free_gacha_chara.jpg"
-ad_free_gacha_chara2_path = "img/ad_free_gacha_chara2.jpg"
-plus_10_path = "img/+10.jpg"
-gacha_result_path = "img/gacha_result.jpg"
+#広告視聴の無料キャラガチャ
+AD_FREE_GACHA_CHARA_PATH = "img/ad_free_gacha_chara.jpg"
+AD_FREE_GACHA_CHARA2_PATH = "img/ad_free_gacha_chara2.jpg"
+PLUS_10_PATH = "img/plus_10.jpg"
+GACHA_RESULT_PATH = "img/gacha_result.jpg"
 
-#スクロールしてガチャ切り替え
+#広告視聴の無料武器ガチャ
+BUKI_PATH = "img/buki.jpg"
+FREE_BUKI_PATH = "img/free_buki.jpg"
+AD_FREE_GACHA_BUKI_PATH = "img/ad_free_gacha_buki.jpg"
+AD_FREE_GACHA_BUKI2_PATH = "img/ad_free_gacha_buki2.jpg"
+RESULT_BUKI_PATH = "img/result_buki.jpg"
+RESULT_BUKI_OK_PATH = "img/buki_result_ok.jpg"
+BUKI_RESULT_RETURN_PATH = "img/buki_result_return.jpg"
+
+# スクロールしてガチャ切り替え
+def scroll_until_gacha_found():
+    while True:
+        if scroll_right_to_left():
+            # スクロールして画像を探し続ける
+            time.sleep(0.2)  # スクロール後に少し待機
+        else:
+            # 画像が見つかった場合、処理を進める
+            break
+
 def scroll_right_to_left():
     position = find_template_position(SCR_TEMPLATE_PATH, THRESHOLD)
     if position:
         # スクロール操作を実行
         scroll_on_device(START_X, START_Y, END_X, END_Y, DURATION)
-        return True
-    return False
+        return True  # スクロール成功
+    return False  # スクロール不要（目標画像が見つかっている）
 
-# free_gacha と gacha_25 の存在を確認して判定
-def check_gacha_buttons(free_gacha_template_path, gacha25_template_path):
-    free_gacha_position = find_template_position(free_gacha_template_path)
-    gacha25_position = find_template_position(gacha25_template_path)
-    return free_gacha_position if free_gacha_position and not gacha25_position else None
+def process_gacha():
+    # キャラクターの画像（ad_free_gacha_chara.jpg または ad_free_gacha_chara2.jpg）を見つけてタップ
+    chara_position = find_template_position(AD_FREE_GACHA_CHARA_PATH)
 
-def process_gacha(ad_free_gacha_chara_path, ad_free_gacha_chara2_path, plus_10_path, gacha_result_path):
-    # ad_free_gacha_chara.jpgとad_free_gacha_chara2.jpgのどちらがあるか確認
-    position_chara = None
-    position_chara2 = None
-
-    # どちらかが見つかるまで再試行
-    while not position_chara and not position_chara2:
-        position_chara = find_template_position(ad_free_gacha_chara_path)
-        position_chara2 = find_template_position(ad_free_gacha_chara2_path)
-
-        if not position_chara and not position_chara2:
-            print("どちらの画像も見つかりませんでした。再試行します...")
-
-    if position_chara:
-        tap_on_device(position_chara[0], position_chara[1])
-        time.sleep(50)
+    # AD_FREE_GACHA_CHARA_PATH が見つかった場合のみ処理を実行
+    if chara_position:
+        tap_on_device(chara_position[0], chara_position[1])  # 画像が見つかった場合はタップ
+        print("広告視聴ガチャ(キャラ)を回します")
+        time.sleep(50)  # 広告の視聴時間（待機）
 
         # 広告を閉じる
         close_ad()
-        time.sleep(15)
+        time.sleep(15)  # 広告閉じ後に少し待機
 
-        # +10.jpgをタップ
-        if tap_button_with_retry(plus_10_path):
-            # gacha_result.jpgをタップ
-            tap_button_with_retry(gacha_result_path)
+        # +10をタップ
+        if tap_button_with_retry(PLUS_10_PATH):
+            # ガチャ結果をタップ
+            tap_button_with_retry(GACHA_RESULT_PATH)
+    else:
+        # AD_FREE_GACHA_CHARA_PATH が見つからない場合、AD_FREE_GACHA_CHARA2_PATH を確認
+        chara_position2 = find_template_position(AD_FREE_GACHA_CHARA2_PATH)
+        if chara_position2:
+            print("広告視聴ガチャ(キャラ)は既に回されています")
+        else:
+            print("キャラクターガチャ画像が見つかりませんでした。処理をスキップします")
 
-    elif position_chara2:
-        time.sleep(0)
+    time.sleep(1)
+    print("ガチャの種類を切り替えます")
+    time.sleep(1)
 
+def find_and_tap(paths, wait_time=0):
+    while True:
+        for path in paths:
+            position = find_template_position(path)
+            if position:
+                tap_on_device(position[0], position[1])
+                if wait_time:
+                    time.sleep(wait_time)
+                return position
+        print("画像が見つかりません。再試行します...")
+        time.sleep(2)  # 再試行までの待機
 
 def tap_gacha_button():
-    position = find_template_position(GACHA_BUTTON_PATH)
+    while True:
+        position = find_template_position(GACHA_BUTTON_PATH)
+        if position:
+            # 画像が見つかればその位置をタップ
+            tap_on_device(position[0], position[1])
+            print("ガチャ画面に移動します")
+            time.sleep(3)  # ガチャ画面に移動した後、少し待機
+            return True
+        else:
+            # 画像が見つからなければ再試行（待機時間を追加してリトライ）
+            print("ガチャボタンが見つかりませんでした。再試行します...")
+            time.sleep(1)  # 再試行前に待機時間を設ける
 
-    if position:
-        # 画像が見つかればその位置をタップ
-        tap_on_device(position[0], position[1])
-        return True
+"""
+========================================== 武器ガチャ ==========================================   
+"""
+
+def process_buki_gacha():
+
+    # free_buki.jpg または buki.jpg のどちらかを探してタップ
+    target_position = find_and_tap([FREE_BUKI_PATH, BUKI_PATH])
+    if not target_position:
+        print("武器ガチャ画像が見つかりませんでした。終了します")
+        return
+
+    time.sleep(2)  # 少し待機
+
+    # 広告付きガチャの確認 (AD_FREE_GACHA_BUKI_PATHのみを確認)
+    ad_position = find_template_position(AD_FREE_GACHA_BUKI_PATH)
+    if ad_position:
+        tap_on_device(ad_position[0], ad_position[1])  # 広告ガチャをタップ
+        print("広告視聴ガチャ(武器)を回します")
+        time.sleep(50)  # 広告視聴時間（待機）
+
+        # 広告を閉じる
+        close_ad()
+        time.sleep(20)  # 広告閉じ後に少し待機
+
+        # 結果画面の操作
+        handle_gacha_result(RESULT_BUKI_PATH, RESULT_BUKI_OK_PATH, BUKI_RESULT_RETURN_PATH)
     else:
-        # 画像が見つからなければタップせずにFalseを返す
-        return False
+        # AD_FREE_GACHA_BUKI_PATHが見つからない場合、AD_FREE_GACHA_BUKI2_PATHを確認
+        ad_position2 = find_template_position(AD_FREE_GACHA_BUKI2_PATH)
+        if ad_position2:
+            print("広告視聴ガチャ(武器)は既に回されています")
+        else:
+            print("広告ガチャの画像が見つかりませんでした。処理をスキップします")
+
+def handle_gacha_result(result_path, ok_path, return_path):
+    if tap_button_with_retry(result_path):
+        tap_button_with_retry(ok_path)
+        tap_button_with_retry(return_path)
+
+"""
+========================================== その他ガチャ ==========================================   
+"""
+
+def tap_free_gacha_no_ad():
+
+    while True:
+        # free_gacha.jpg が見つかればタップ
+        position_free_gacha = find_template_position(free_gacha_template_path)
+        if position_free_gacha:
+            tap_on_device(position_free_gacha[0], position_free_gacha[1])
+            print("無料ガチャ(広告なし)を回します")
+
+            # === gacha_ok.jpg をタップ ===
+            wait_and_tap_gacha_ok()  # gacha_ok.jpg を見つかるまでタップする関数を呼び出し
+            time.sleep(15)
+
+            wait_and_tap_gacha_10()
+
+            wait_and_tap_gacha_result()
+            return True  # タップしたら終了
+
+        # free_gacha.jpg が見つからなければ gacha_25.jpg を確認
+        position_gacha_25 = find_template_position(gacha_25_template_path)
+        if position_gacha_25:
+            print("無料ガチャ(広告なし)は既に引いてあります")
+            return False  # スキップしたら終了
+
+        # どちらも見つからない場合は少し待って再確認
+
+def wait_and_tap_gacha_ok():
+    while True:
+        position_gacha_ok = find_template_position(gacha_ok_template_path)
+        if position_gacha_ok:
+            tap_on_device(position_gacha_ok[0], position_gacha_ok[1])
+            break  # ボタンが見つかればループ終了
+        else:
+            print("はいボタンが見つかりません。再試行します...")
+            time.sleep(1)  # 少し待機して再試行
+
+def wait_and_tap_gacha_10():
+    while True:
+        position_gacha_10 = find_template_position(plus10_template_path)
+        if position_gacha_10:
+            tap_on_device(position_gacha_10[0], position_gacha_10[1])
+            break  # ボタンが見つかればループ終了
+        else:
+            print("限界突破が見つかりません。再試行します...")
+            time.sleep(1)  # 少し待機して再試行
+
+def wait_and_tap_gacha_result():
+    while True:
+        position_gacha_result = find_template_position(gacha_result_template_path)
+        if position_gacha_result:
+            tap_on_device(position_gacha_result[0], position_gacha_result[1])
+            break  # ボタンが見つかればループ終了
+        else:
+            print("戻るボタンが見つかりません。再試行します...")
+            time.sleep(1)  # 少し待機して再試行
+
