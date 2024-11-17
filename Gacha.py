@@ -16,7 +16,7 @@ THRESHOLD = 0.8  # 画像認識の閾値
 
 #無料ガチャ
 gacha_ok_template_path = "img/gacha_ok.jpg"
-plus10_template_path = "img/+10.jpg"
+plus10_template_path = "img/plus_10.jpg"
 gacha_result_template_path = "img/gacha_result.jpg"
 free_gacha_template_path = "img/free_gacha.jpg"
 gacha_25_template_path = "img/gacha_25.jpg"
@@ -55,30 +55,32 @@ def scroll_right_to_left():
     return False  # スクロール不要（目標画像が見つかっている）
 
 def process_gacha():
-    # キャラクターの画像（ad_free_gacha_chara.jpg または ad_free_gacha_chara2.jpg）を見つけてタップ
-    chara_position = find_template_position(AD_FREE_GACHA_CHARA_PATH)
+    while True:
+        # キャラクターの画像（ad_free_gacha_chara.jpg または ad_free_gacha_chara2.jpg）を見つけてタップ
+        chara_position = find_template_position(AD_FREE_GACHA_CHARA_PATH)
 
-    # AD_FREE_GACHA_CHARA_PATH が見つかった場合のみ処理を実行
-    if chara_position:
-        tap_on_device(chara_position[0], chara_position[1])  # 画像が見つかった場合はタップ
-        print("広告視聴ガチャ(キャラ)を回します")
-        time.sleep(50)  # 広告の視聴時間（待機）
+        # AD_FREE_GACHA_CHARA_PATH が見つかった場合のみ処理を実行
+        if chara_position:
+            tap_on_device(chara_position[0], chara_position[1])  # 画像が見つかった場合はタップ
+            print("広告視聴ガチャ(キャラ)を回します")
+            time.sleep(50)  # 広告の視聴時間（待機）
 
-        # 広告を閉じる
-        close_ad()
-        time.sleep(15)  # 広告閉じ後に少し待機
+            # 広告を閉じる
+            close_ad()
+            time.sleep(15)  # 広告閉じ後に少し待機
 
-        # +10をタップ
-        if tap_button_with_retry(PLUS_10_PATH):
-            # ガチャ結果をタップ
-            tap_button_with_retry(GACHA_RESULT_PATH)
-    else:
-        # AD_FREE_GACHA_CHARA_PATH が見つからない場合、AD_FREE_GACHA_CHARA2_PATH を確認
-        chara_position2 = find_template_position(AD_FREE_GACHA_CHARA2_PATH)
-        if chara_position2:
-            print("広告視聴ガチャ(キャラ)は既に回されています")
+            # +10をタップ
+            if tap_button_with_retry(PLUS_10_PATH):
+                # ガチャ結果をタップ
+                tap_button_with_retry(GACHA_RESULT_PATH)
+                break
         else:
-            print("キャラクターガチャ画像が見つかりませんでした。処理をスキップします")
+            # AD_FREE_GACHA_CHARA_PATH が見つからない場合、AD_FREE_GACHA_CHARA2_PATH を確認
+            chara_position2 = find_template_position(AD_FREE_GACHA_CHARA2_PATH)
+            if chara_position2:
+                print("広告視聴ガチャ(キャラ)は既に回されています")
+            else:
+                print("キャラクターガチャ画像が見つかりませんでした。再試行します...")
 
     time.sleep(1)
     print("ガチャの種類を切り替えます")
