@@ -3,11 +3,6 @@ import time
 
 # 広告の閉じるボタン（ad_close1～ad_close16）を探してタップする関数
 def close_ad():
-    """
-    広告の閉じるボタン（ad_close1～ad_close13）のいずれかを見つけてタップします。
-    最大4回試行し、見つかればタップします。見つからない場合は次の試行へ進み、最終的に
-    見つからなければ終了します。
-    """
     ad_closed = False
     attempts = 0  # 最大試行回数を追跡
     while attempts < 4 and not ad_closed:
