@@ -1,18 +1,42 @@
-import time
 from Advertisement import close_ad
-from OpenCV2 import tap_on_device, find_template_position, tap_button_with_retry, tap_button_with_retry_restricted
+from OpenCV2 import *
 
 mission_template_path = "img/mission.jpg"  # missionボタンのテンプレート画像
 no_mission_template_path = "img/no_mission.jpg"  # no_missionボタンのテンプレート画像
 
+def process_mission():
+    while True:
+        if check_no_mission(no_mission_template_path):
+            print("ミッションがありません。処理をスキップします。")
+            return False
+
+        if tap_mission_button(mission_template_path, no_mission_template_path):
+            print("ミッションボタンをタップしました。")
+            break
+        else:
+            print("ミッションボタンが見つかりませんでした。再試行します...")
+            time.sleep(2)
+
+    # ミッション報酬を収集
+    collect_mission_rewards()
+
+    # 広告を視聴して報酬を収集
+    watch_and_close_ads()
+
+    # ミッション画面を閉じる
+    close_mission()
+    print("ミッション処理が完了しました。")
+
+
 # ボタンを探してタップする関数
 def tap_mission(mission_template_path):
-    position = find_template_position(mission_template_path)
-    if position:
-        tap_on_device(position[0], position[1])
-        return True
-    print("ボタンが見つかりませんでした。")
-    return False
+    while True:
+        position = find_template_position(mission_template_path)
+        if position:
+            tap_on_device(position[0], position[1])
+            break
+        print("ボタンが見つかりませんでした。")
+        return False
 
 # no_mission.jpgがある場合は処理をスキップ
 def check_no_mission(no_mission_template_path):
@@ -21,18 +45,19 @@ def check_no_mission(no_mission_template_path):
 
 # missionボタンをタップする処理（no_missionが見つかるとスキップ）
 def tap_mission_button(mission_template_path, no_mission_template_path):
-    # no_mission.jpg が見つかると、処理をスキップする
-    if check_no_mission(no_mission_template_path):
-        return False
+    while True:
+        # no_mission.jpg が見つかると、処理をスキップする
+        if check_no_mission(no_mission_template_path):
+            return False
 
-    # no_mission.jpg が見つからなければ、通常通りボタンをタップ
-    position = find_template_position(mission_template_path)
-    if position:
-        tap_on_device(position[0], position[1])
-        time.sleep(2)  # 少し待機
-        return True
-    else:
-        return False
+        # no_mission.jpg が見つからなければ、通常通りボタンをタップ
+        position = find_template_position(mission_template_path)
+        if position:
+            tap_on_device(position[0], position[1])
+            time.sleep(2)
+            break
+        else:
+            return False
 
 # mission_get～mission_daily_rouletteの繰り返し処理
 def collect_mission_rewards():
@@ -75,10 +100,12 @@ def watch_and_close_ads():
 
 # close_missionボタンをタップして終了する処理
 def close_mission():
-    close_mission_template_path = "img/close_mission.jpg"  # close_missionボタンのテンプレート画像
-    position = find_template_position(close_mission_template_path)
-    if position:
-        tap_on_device(position[0], position[1])
-    else:
-        print("close_missionボタンが見つかりませんでした。")
-    time.sleep(3)
+    while True:
+        close_mission_template_path = "img/close_mission.jpg"  # close_missionボタンのテンプレート画像
+        position = find_template_position(close_mission_template_path)
+        if position:
+            tap_on_device(position[0], position[1])
+            break
+        else:
+            print("close_missionボタンが見つかりませんでした。")
+        time.sleep(3)
