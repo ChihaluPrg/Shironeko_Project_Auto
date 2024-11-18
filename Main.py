@@ -1,72 +1,40 @@
-import time
-
-from Gacha import (process_gacha, scroll_until_gacha_found, tap_gacha_button, process_buki_gacha,
-                   tap_free_gacha_no_ad)
+from QuestMovement import *
+from Gacha import *
+from Quest import *
+from Mission import *
+from Launch import *
+from ADB import *
+from Update_apk import *
 
 if __name__ == "__main__":
-    """
-    # ADBサーバーの再起動
-    set_tcpip_mode_without_device_check()
-    connect_device("192.168.0.103")  # 接続したいIPアドレスを指定
 
-#===================================================================================
-    
-    # 白猫プロジェクトを起動
-    print("起動処理を開始します。")
-    launch_game()
-    time.sleep(25)
+    process_adb()
+    time.sleep(1)
 
-    # デイリールーレットのOKボタンをタップ
-    if daily_roulette():
-        print("デイリールーレットのOKボタンをタップしました")
-        time.sleep(2)
-    else:
-        print("デイリールーレットのOKボタンが表示されませんでした")
-        time.sleep(1)
+    #===================================================================================
 
-    # お詫びのOKボタンをタップ
-    if apology():
-        print("お詫びのOKボタンをタップしました")
-        time.sleep(2)
-    else:
-        print("お詫びのOKボタンのタップが表示されませんでした")
-        time.sleep(1)
-
-    #ボスの弱点変更
-    if boss_weaknesses():
-        print("BOSSの弱点変更画面をタップしました")
-        time.sleep(2)
-    else:
-        print("ボスの弱点変更画面が表示されませんでした")
-        time.sleep(1)
-
-    if boss_weaknesses_ok():
-        print("BOSSの弱点変更ボタンをタップしました")
-        time.sleep(2)
-    else:
-        print("ボスの弱点変更ボタンが表示されませんでした")
-        time.sleep(1)
-
-    # ニュースのOKボタンをタップ
-    if close_news():
-        print("ニュースのOKボタンをタップしました")
-        time.sleep(35)
-    else:
-        print("ニュースのOKボタンが表示されませんでした")
-        time.sleep(2)
-
-    # 動画画面を閉じる
-    if movie_news():
-        print("ムービーのOKボタンをタップしました")
-        time.sleep(2)
-    else:
-        print("ムービーのOKボタンが表示されませんでした")
-        time.sleep(2)
+    process_launch()
+    time.sleep(2)
 
     print("起動処理が終了しました。\n")
     time.sleep(1)
 
-# ===================================================================================
+    # ===================================================================================
+
+    print("デイリーミッションのクエスト周回の処理を開始します\n")
+
+    process_bouken()
+    time.sleep(2)
+
+    process_quest()
+    time.sleep(2)
+
+    process_mission()
+    time.sleep(2)
+
+    print("デイリーミッションのクエスト周回の処理をが終了しました\n")
+
+    # ===================================================================================
 
     print("デイリーミッションを開始します。\n")
     time.sleep(1)
@@ -75,27 +43,15 @@ if __name__ == "__main__":
     time.sleep(1)
 
     # missionボタンをタップ
-    if tap_mission_button(mission_template_path, no_mission_template_path):
-        # mission_get～mission_daily_roulette の繰り返し処理
-        collect_mission_rewards()
-
-        # mission_watch～mission_ok の繰り返し処理
-        watch_and_close_ads()
-
-        # close_missionボタンをタップして終了
-        close_mission()
+    process_mission()
+    time.sleep(1)
 
     print("デイリーミッションが終了しました。\n")
-    time.sleep(1)
-"""
+
     # ===================================================================================
 
-    print("デイリーミッションのクエスト周回の処理を開始します")
+    print("ガチャを回す処理を開始します\n")
 
-    print("デイリーミッションのクエスト周回の処理をが狩猟しました\n")
-
-    print("ガチャを回す処理を開始します")
-    time.sleep(1)
 
     #ガチャの画面に移動
     tap_gacha_button()
