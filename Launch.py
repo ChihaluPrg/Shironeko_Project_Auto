@@ -1,6 +1,8 @@
 import subprocess
+import time
 from ADB import check_device_connected, adb_path, device_id
 from OpenCV2 import find_template_position, tap_on_device
+from Update_apk import process_update, update_start
 
 # 画像テンプレートのパス
 DAILY_ROULETTE_TEMPLATE_PATH = "img/daily_roulette.jpg"
@@ -9,7 +11,99 @@ CLOSE_NEWS_TEMPLATE_PATH = "img/news_close.jpg"
 CLOSE_MOVIE_TEMPLATE_PATH = "img/movie_close.jpg"
 BOSS_WEAKNESSES_TEMPLATE_PATH = "img/boss_weaknesses.jpg"
 BOSS_WEAKNESSES_OK_TEMPLATE_PATH = "img/boss_weaknesses_ok.jpg"
+UPDATE_POPUP_PATH = "img/update_popup.jpg"
+UPDATE_START_PATH = "img/update_start.jpg"
 
+def process_launch():
+
+    while True:
+        # 白猫の起動とアプデの確認、更新
+        launch_game()
+        time.sleep(10)
+        print("最新バージョンの更新の確認をします...")
+        position = find_template_position(UPDATE_POPUP_PATH)
+        if position:
+            process_update()
+            break
+        else:
+            print("更新は見つかりませんでした")
+            break
+
+    while True:
+        # アプデ後の起動
+        position = find_template_position(UPDATE_START_PATH)
+        if position:
+            update_start()
+            break
+        else:
+            break
+
+    time.sleep(15)
+
+    while True:
+        # デイリールーレットのOKボタンをタップ
+        if daily_roulette():
+            print("デイリールーレットのOKボタンをタップしました")
+            time.sleep(2)
+            break
+        else:
+            print("デイリールーレットのOKボタンが表示されませんでした")
+            time.sleep(1)
+            break
+
+    while True:
+        # お詫びのOKボタンをタップ
+        if apology():
+            print("お詫びのOKボタンをタップしました")
+            time.sleep(2)
+            break
+        else:
+            print("お詫びのOKボタンのタップが表示されませんでした")
+            time.sleep(1)
+            break
+
+    while True:
+        # ボスの弱点変更
+        if boss_weaknesses():
+            print("BOSSの弱点変更画面をタップしました")
+            time.sleep(2)
+            break
+        else:
+            print("ボスの弱点変更画面が表示されませんでした")
+            time.sleep(1)
+            break
+
+    while True:
+        if boss_weaknesses_ok():
+            print("BOSSの弱点変更ボタンをタップしました")
+            time.sleep(2)
+            break
+        else:
+            print("ボスの弱点変更ボタンが表示されませんでした")
+            time.sleep(1)
+            break
+
+    while True:
+        # ニュースのOKボタンをタップ
+        if close_news():
+            print("ニュースのOKボタンをタップしました")
+            time.sleep(35)
+            break
+        else:
+            print("ニュースのOKボタンが表示されませんでした")
+            time.sleep(2)
+            break
+
+    while True:
+        # 動画画面を閉じる
+        if movie_news():
+            print("ムービーのOKボタンをタップしました")
+            time.sleep(2)
+            break
+        else:
+            print("ムービーのOKボタンが表示されませんでした")
+            time.sleep(2)
+            break
 
 # 白猫プロジェクトを起動する
 def launch_game():
