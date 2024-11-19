@@ -79,6 +79,7 @@ def process_gacha():
             chara_position2 = find_template_position(AD_FREE_GACHA_CHARA2_PATH)
             if chara_position2:
                 print("広告視聴ガチャ(キャラ)は既に回されています")
+                break
             else:
                 print("キャラクターガチャ画像が見つかりませんでした。再試行します...")
 
@@ -144,6 +145,7 @@ def process_buki_gacha():
         ad_position2 = find_template_position(AD_FREE_GACHA_BUKI2_PATH)
         if ad_position2:
             print("広告視聴ガチャ(武器)は既に回されています")
+            return False
         else:
             print("広告ガチャの画像が見つかりませんでした。処理をスキップします")
 
@@ -166,11 +168,13 @@ def tap_free_gacha_no_ad():
             print("無料ガチャ(広告なし)を回します")
 
             # === gacha_ok.jpg をタップ ===
+            time.sleep(1)
             wait_and_tap_gacha_ok()  # gacha_ok.jpg を見つかるまでタップする関数を呼び出し
             time.sleep(15)
 
             wait_and_tap_gacha_10()
 
+            time.sleep(1)
             wait_and_tap_gacha_result()
             return True  # タップしたら終了
 
