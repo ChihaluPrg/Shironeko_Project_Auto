@@ -1,3 +1,4 @@
+from Countdown import countdown
 from OpenCV2 import *
 from Scratch import *
 
@@ -10,6 +11,7 @@ RETORY_PATH = "img/retry.jpg"
 RETORY_YES_PATH = "img/retry_yes.jpg"
 QUEST_END_PATH = "img/quest_end.jpg"
 SHINMITUDO_PATH = "img/shinmitudo_result_ok.jpg"
+QUEST_PATH = "img/quest_bouken3.jpg"
 
 DURATION = 1500
 THRESHOLD = 0.8
@@ -28,23 +30,23 @@ def process_quest():
     while True:
         # 最初に QUEST_3_PATH を探す
         position1 = find_template_position(QUEST_3_PATH)
+        position2 = find_template_position(QUEST_3_2_PATH)
+        position3 = find_template_position(QUEST_PATH)
         if position1:
             tap_on_device(QUEST_3_X_PATH, QUEST_3_Y_PATH)  # QUEST_3_PATH 用の座標でタップ
             print("quest_3.jpg をタップしました")
             time.sleep(1)
             break  # 次の処理に進む
-
-        # 次に QUEST_3_2_PATH を探す
-        position2 = find_template_position(QUEST_3_2_PATH)
-        if position2:
+        elif position2:
             tap_on_device(QUEST_3_2_X_PATH, QUEST_3_2_Y_PATH)  # QUEST_3_2_PATH 用の座標でタップ
             print("quest_3-2.jpg をタップしました")
             time.sleep(1)
             break  # 次の処理に進む
-
-        # どちらも見つからない場合、再試行
-        print("quest_3.jpg または quest_3-2.jpg が見つかりませんでした。再試行します...")
-        time.sleep(2)
+        elif position3:
+            break
+        else:
+            print("quest_3.jpg または quest_3-2.jpg が見つかりませんでした。再試行します...")
+            time.sleep(2)
 
     while True:
         position = find_template_position(QUEST_ASTRO_PATH)
@@ -62,7 +64,7 @@ def process_quest():
         if position:
             tap_on_device(position[0], position[1])
             print("go.jpgをタップしました")
-            time.sleep(10)
+            countdown(10)
             break  # 次の処理へ進む
         else:
             print("go.jpgが見つかりませんでした。再試行します...")
@@ -72,17 +74,20 @@ def process_quest():
         if position:
             print("QUEST2_PATH が見つかりました。スクロールを実行します...")
             scroll_on_device(START_X, START_Y, END_X, END_Y, DURATION)
-            time.sleep(10)  # スクロール後に少し待機
+            countdown(13)  # スクロール後に少し待機
             break
         else:
             print("QUEST2_PATH が見つかりませんでした。再試行します...")
             time.sleep(1)  # 見つからない場合に少し待機
+
+    scratch()
 
     while True:
         position = find_template_position(SHINMITUDO_PATH)
         if position:
             tap_on_device(position[0], position[1])
             print("キャラの親密度が深まりました")
+            time.sleep(1)
             break
         else:
             break
@@ -100,20 +105,20 @@ def process_quest():
         position = find_template_position(RETORY_YES_PATH)
         if position:
             tap_on_device(position[0], position[1])
-            time.sleep(10)
+            countdown(10)
             break
         else:
             print("RETORY_YES_PATHが見つかりませんでした。再試行します...")
 
-    for i in range(2):
-        print(f"{i + 1}回目の処理が終わりました")
-        time.sleep(10)
+    for i in range(9):
+
+        countdown(10)
         while True:
             position = find_template_position(QUEST2_PATH)
             if position:
                 print("QUEST2_PATH が見つかりました。スクロールを実行します...")
                 scroll_on_device(START_X, START_Y, END_X, END_Y, DURATION)
-                time.sleep(10)  # スクロール後に少し待機
+                countdown(10)  # スクロール後に少し待機
                 break
             else:
                 print("QUEST2_PATH が見つかりませんでした。再試行します...")
@@ -123,18 +128,20 @@ def process_quest():
             if position:
                 tap_on_device(position[0], position[1])
                 print("キャラの親密度が深まりました")
+                time.sleep(1)
                 break
             else:
                 break
 
         scratch()
 
-        if i < 1:
+        if i < 8:
             while not tap_button_with_retry(RETORY_PATH):
                 print("再挑戦ボタンが見つかりません。再試行します...")
 
             while not tap_button_with_retry(RETORY_YES_PATH):
                 print("はいボタンが見つかりません。再試行します...")
+            print(f"{i + 1}回目の処理が終わりました{i + 1}回目の処理を始めます")
         else:
             while not tap_button_with_retry(QUEST_END_PATH):
                 print("OKボタンが見つかりません。再試行します...")
