@@ -3,6 +3,7 @@ import time
 from ADB import check_device_connected, adb_path, device_id
 from OpenCV2 import find_template_position, tap_on_device
 from Update_apk import process_update, update_start
+from Countdown import countdown
 
 # 画像テンプレートのパス
 DAILY_ROULETTE_TEMPLATE_PATH = "img/daily_roulette.jpg"
@@ -13,13 +14,15 @@ BOSS_WEAKNESSES_TEMPLATE_PATH = "img/boss_weaknesses.jpg"
 BOSS_WEAKNESSES_OK_TEMPLATE_PATH = "img/boss_weaknesses_ok.jpg"
 UPDATE_POPUP_PATH = "img/update_popup.jpg"
 UPDATE_START_PATH = "img/update_start.jpg"
+TOWN_BOUKEN_PARTY_PATH = "img/town_bouken_party.jpg"
+QUEST_PATH = "img/quest_bouken3.jpg"
 
 def process_launch():
 
     while True:
         # 白猫の起動とアプデの確認、更新
         launch_game()
-        time.sleep(10)
+        countdown(10)
         print("最新バージョンの更新の確認をします...")
         position = find_template_position(UPDATE_POPUP_PATH)
         if position:
@@ -30,21 +33,25 @@ def process_launch():
             break
 
     while True:
-        # アプデ後の起動
-        position = find_template_position(UPDATE_START_PATH)
-        if position:
-            update_start()
+        if start():
+            countdown(15)
             break
         else:
+            countdown(5)
             break
 
-    time.sleep(15)
+    while True:
+        position = find_template_position(QUEST_PATH)
+        if position:
+            return True
+        else:
+            break
 
     while True:
         # デイリールーレットのOKボタンをタップ
         if daily_roulette():
             print("デイリールーレットのOKボタンをタップしました")
-            time.sleep(2)
+            time.sleep(3)
             break
         else:
             print("デイリールーレットのOKボタンが表示されませんでした")
@@ -85,10 +92,15 @@ def process_launch():
 
     while True:
         # ニュースのOKボタンをタップ
+        position = find_template_position(BOSS_WEAKNESSES_TEMPLATE_PATH)
         if close_news():
             print("ニュースのOKボタンをタップしました")
-            time.sleep(35)
-            break
+            if position:
+                time.sleep(2)
+                return True
+            else:
+                countdown(35)
+                break
         else:
             print("ニュースのOKボタンが表示されませんでした")
             time.sleep(2)
@@ -146,3 +158,13 @@ def close_news():
 
 def movie_news():
     return tap_template(CLOSE_MOVIE_TEMPLATE_PATH, "動画の閉じるボタン")
+
+def start():
+    while True:
+        # アプデ後の起動
+        position = find_template_position(UPDATE_START_PATH)
+        if position:
+            update_start()
+            break
+        else:
+            break
