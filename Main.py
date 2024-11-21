@@ -1,13 +1,16 @@
 from QuestMovement import *
 from Gacha import *
 from Quest import *
-from Mission import *
 from Launch import *
 from ADB import *
-from Update_apk import *
+from Mission_Receive import *
+from Present import *
+from Town import *
+from Scratch import *
 
 if __name__ == "__main__":
-
+    """"""
+    # adb起動
     process_adb()
     time.sleep(1)
 
@@ -29,51 +32,45 @@ if __name__ == "__main__":
     process_quest()
     time.sleep(2)
 
-    process_mission()
-    time.sleep(2)
-
     print("デイリーミッションのクエスト周回の処理をが終了しました\n")
 
     # ===================================================================================
 
-    print("デイリーミッションを開始します。\n")
-    time.sleep(1)
-
     print("ミッション報酬受け取り、広告ジュエル回収を行います\n")
-    time.sleep(1)
 
     # missionボタンをタップ
-    process_mission()
+    process_mission_receive()
     time.sleep(1)
 
-    print("デイリーミッションが終了しました。\n")
+    print("ミッション報酬受け取り、広告ジュエル回収が終了しました\n")
 
+    # ===================================================================================
+    print("スクラッチを削ります\n")
+
+    process_scratch()
+
+    print("スクラッチを削る処理が終了しました\n")
     # ===================================================================================
 
     print("ガチャを回す処理を開始します\n")
 
-
-    #ガチャの画面に移動
-    tap_gacha_button()
-
-    # 広告視聴の無料キャラガチャを回す
-    process_gacha()
-
-    # ガチャの種類を変えるためにスクロールを実行
-    scroll_until_gacha_found()
-
-    # 広告なしの無料ガチャを回す
-    tap_free_gacha_no_ad()
-    time.sleep(1)
-
-    # 広告視聴の無料武器ガチャを実行
-    process_buki_gacha()
+    # 無料ガチャを回す
+    process_gacha_all()
     time.sleep(1)
 
     print("ガチャを回す処理が終了しました\n")
     time.sleep(2)
 
+    # ===================================================================================
 
+    print("プレゼントを受け取る処理を開始します\n")
+
+    process_town()
+    time.sleep(1)
+
+    process_present()
+
+    print("プレゼントを受け取る処理が終了しました\n")
 
 
 
