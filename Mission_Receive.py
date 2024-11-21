@@ -52,47 +52,55 @@ def mission_tap():
             print("ミッションボタンが見つかりませんでした。再試行します...")
 
 def treasure_soul():
-    for i in range(6):
+    for i in range(3):
         try:
-            # 動画視聴ボタンの位置を探す
+            # ゲットボタンの位置を探す
             position = find_template_position(GET_PATH)
 
             if position:
-                # 動画視聴ボタンが見つかったらタップ
+                # ゲットボタンが見つかったらタップ
                 tap_on_device(position[0], position[1])
                 time.sleep(2)  # 少し待機
 
                 # ミッション獲得ボタンを見つけるまでループ
                 while True:
                     position2 = find_template_position(TRE_ROULETEE_PATH)
-
                     if position2:
                         # ミッション獲得ボタンが見つかったらタップ
                         tap_on_device(position2[0], position2[1])
                         break  # ミッション獲得が成功したらループを抜ける
                     else:
-                        print("ミッション獲得ボタンが見つかりません。再試行します。")
+                        print("ルーレットボタンが見つかりません。再試行します。")
                         time.sleep(2)  # 少し待機して再試行
+
+                # デイリーミッション獲得ボタンを見つけるまでループ
                 while True:
                     position3 = find_template_position(TRE_DAILY_PATH)
-
                     if position3:
-                        # ミッション獲得ボタンが見つかったらタップ
+                        # デイリーミッション獲得ボタンが見つかったらタップ
                         tap_on_device(position3[0], position3[1])
                         break  # ミッション獲得が成功したらループを抜ける
                     else:
-                        print("ミッション獲得ボタンが見つかりません。再試行します。")
+                        print("デイリーミッションボタンが見つかりません。再試行します。")
                         time.sleep(2)  # 少し待機して再試行
             else:
-                print("ゲットボタンが見つかりませんでした。")
-                return True # 動画視聴ボタンが見つからない場合は終了
+                # ゲットボタンが見つからなかった場合
+                print(f"ゲットボタンが{i + 1}回目の試行で見つかりませんでした。")
+                return  # 処理を終了（失敗として返す）
+
         except Exception as e:
+            # 予期しないエラーをキャッチ
             print(f"エラーが発生しました: {e}")
-    return True  # 3回の試行後に成功
+            return False  # エラーが発生した場合も終了
+
+    # 全ての試行が正常に完了した場合
+    return True
 
 
 def watch_movie():
-    for i in range(6):
+    time.sleep(2)
+    for i in range(3):  # 最大6回試行
+        print(f"=== {i+1}回目の試行 ===")  # 試行のログを追加
         try:
             # 動画視聴ボタンの位置を探す
             position = find_template_position(WATCH_PATH)
@@ -100,6 +108,7 @@ def watch_movie():
             if position:
                 # 動画視聴ボタンが見つかったらタップ
                 tap_on_device(position[0], position[1])
+                print(f"{i+1}回目: 動画を視聴します")
                 countdown(50)  # 50秒カウントダウン（動画視聴をシミュレート）
                 close_ad()  # 広告を閉じる
                 time.sleep(2)  # 少し待機
@@ -111,17 +120,27 @@ def watch_movie():
                     if position2:
                         # ミッション獲得ボタンが見つかったらタップ
                         tap_on_device(position2[0], position2[1])
+                        print(f"{i+1}回目: ミッション獲得ボタンをタップしました。")
                         break  # ミッション獲得が成功したらループを抜ける
                     else:
                         print("ミッション獲得ボタンが見つかりません。再試行します。")
                         time.sleep(2)  # 少し待機して再試行
 
             else:
-                print("動画視聴ボタンが見つかりませんでした。")
-                return True # 動画視聴ボタンが見つからない場合は終了
+                # 動画視聴ボタンが見つからない場合
+                print(f"{i+1}回目: 動画視聴ボタンが見つかりませんでした。終了します。")
+                return  # 処理を終了
+
         except Exception as e:
+            # 予期しないエラーをキャッチ
             print(f"エラーが発生しました: {e}")
-    return True  # 3回の試行後に成功
+            return False  # 処理を終了
+
+    # 全ての試行が正常に完了した場合
+    print("全ての試行が完了しました。")
+    return True
+
+
 
 
 def close_mission():
