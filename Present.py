@@ -9,6 +9,7 @@ PRESENT_ALL_PATH = "img/page_all.jpg"
 PRESENT_OK_PATH = "img/present_ok.jpg"
 PRESENT_YES_PATH = "img/present_yes.jpg"
 PRESENT_RETURN_PATH = "img/present_return.jpg"
+PRESENT_NO_PATH = "img/no_get_present.jpg"
 
 def process_present():
     while True:
@@ -18,6 +19,21 @@ def process_present():
             break
         else:
             print("プレゼントボタンが見つかりませんでした。再試行します...")
+
+    while True:
+        position = find_template_position(PRESENT_NO_PATH)
+        if position :
+            break
+        else:
+            print("受け取れるプレゼントはありません")
+            while True:
+                position = find_template_position(PRESENT_RETURN_PATH)
+                if position:
+                    tap_on_device(position[0], position[1])
+                    break
+                else:
+                    print("戻るボタン" + ERROR_MESSAGE)
+            return True
 
     while True:
         position = find_template_position(PRESENT_ALL_PATH)
