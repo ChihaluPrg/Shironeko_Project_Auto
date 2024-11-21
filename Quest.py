@@ -64,7 +64,7 @@ def process_quest():
         if position:
             tap_on_device(position[0], position[1])
             print("go.jpgをタップしました")
-            countdown(10)
+            countdown(13)
             break  # 次の処理へ進む
         else:
             print("go.jpgが見つかりませんでした。再試行します...")
@@ -141,7 +141,6 @@ def process_quest():
 
             while not tap_button_with_retry(RETORY_YES_PATH):
                 print("はいボタンが見つかりません。再試行します...")
-            print(f"{i + 1}回目の処理が終わりました{i + 1}回目の処理を始めます")
         else:
             while not tap_button_with_retry(QUEST_END_PATH):
                 print("OKボタンが見つかりません。再試行します...")
