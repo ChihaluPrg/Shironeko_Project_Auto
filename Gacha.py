@@ -1,6 +1,7 @@
 import time
 from Advertisement import close_ad
 from OpenCV2 import find_template_position, tap_on_device, tap_button_with_retry, scroll_on_device
+from Countdown import countdown
 
 #ガチャボタン
 GACHA_BUTTON_PATH = "img/gacha.jpg"
@@ -36,6 +37,22 @@ RESULT_BUKI_PATH = "img/result_buki.jpg"
 RESULT_BUKI_OK_PATH = "img/buki_result_ok.jpg"
 BUKI_RESULT_RETURN_PATH = "img/buki_result_return.jpg"
 
+def process_gacha_all():
+    # ガチャボタンをタップしてガチャ画面に移動
+    if tap_gacha_button():
+        # キャラクターガチャを実行（広告視聴あり）
+        process_gacha()
+        # スクロールしてガチャのバナー画像を探す
+        scroll_until_gacha_found()
+
+        # 無料ガチャ(広告なし)を回す
+        tap_free_gacha_no_ad()
+
+        # 武器ガチャを実行（広告視聴あり）
+        process_buki_gacha()
+
+
+
 # スクロールしてガチャ切り替え
 def scroll_until_gacha_found():
     while True:
@@ -63,11 +80,10 @@ def process_gacha():
         if chara_position:
             tap_on_device(chara_position[0], chara_position[1])  # 画像が見つかった場合はタップ
             print("広告視聴ガチャ(キャラ)を回します")
-            time.sleep(50)  # 広告の視聴時間（待機）
 
             # 広告を閉じる
             close_ad()
-            time.sleep(15)  # 広告閉じ後に少し待機
+            countdown(15)  # 広告閉じ後に少し待機
 
             # +10をタップ
             if tap_button_with_retry(PLUS_10_PATH):
@@ -132,11 +148,10 @@ def process_buki_gacha():
     if ad_position:
         tap_on_device(ad_position[0], ad_position[1])  # 広告ガチャをタップ
         print("広告視聴ガチャ(武器)を回します")
-        time.sleep(50)  # 広告視聴時間（待機）
 
         # 広告を閉じる
         close_ad()
-        time.sleep(20)  # 広告閉じ後に少し待機
+        countdown(20)  # 広告閉じ後に少し待機
 
         # 結果画面の操作
         handle_gacha_result(RESULT_BUKI_PATH, RESULT_BUKI_OK_PATH, BUKI_RESULT_RETURN_PATH)
@@ -170,7 +185,7 @@ def tap_free_gacha_no_ad():
             # === gacha_ok.jpg をタップ ===
             time.sleep(1)
             wait_and_tap_gacha_ok()  # gacha_ok.jpg を見つかるまでタップする関数を呼び出し
-            time.sleep(15)
+            countdown(15)
 
             wait_and_tap_gacha_10()
 
