@@ -34,10 +34,10 @@ def process_launch():
 
     while True:
         if start():
-            countdown(15)
+            countdown(20)
             break
         else:
-            countdown(5)
+            countdown(10)
             break
 
     while True:
@@ -51,7 +51,7 @@ def process_launch():
         # デイリールーレットのOKボタンをタップ
         if daily_roulette():
             print("デイリールーレットのOKボタンをタップしました")
-            time.sleep(3)
+            time.sleep(5)
             break
         else:
             print("デイリールーレットのOKボタンが表示されませんでした")
