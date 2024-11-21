@@ -1,7 +1,9 @@
-import time
 from OpenCV2 import *
 
 BOUKEN_PATH = "img/bouken.jpg"
+QUEST_PATH = "img/quest_bouken.jpg"
+QUEST2_PATH = "img/quest_bouken2.jpg"
+QUEST3_PATH = "img/quest_bouken3.jpg"
 MAIN_STORY_PATH = "img/main_story.jpg"
 NEW_WORLD_PATH = "img/new_world.jpg"
 CHAPTER_ZERO_TITLE_PATH = "img/Chapter Zero_Title.jpg"
@@ -11,6 +13,20 @@ DECISIVE_BATTLE_PATH = "img/Decisive_Battle.jpg"
 DECISIVE_BATTLE2_PATH = "img/Decisive_Battle2.jpg"
 
 def process_bouken():
+
+    while True:
+        position = find_template_position(QUEST_PATH)
+        position2 = find_template_position(QUEST2_PATH)
+        position3 = find_template_position(QUEST3_PATH)
+        if position:
+            return True
+        elif position2:
+            return True
+        elif position3:
+            return True
+        else:
+            break
+
     while True:
         position = find_template_position(BOUKEN_PATH)
         if position:
@@ -78,5 +94,6 @@ def process_bouken():
         elif position2:
             print("decisive_battle2.jpgが見つかりました")
             time.sleep(2)
+            break
         else:
             print("decisive_battle.jpgが見つかりませんでした。再試行します...")
