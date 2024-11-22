@@ -24,7 +24,7 @@ def process_mission_receive():
 
     # トレジャーソウル報酬の処理
     treasure_soul()
-    time.sleep(1)
+    time.sleep(2)
 
     # 動画視聴報酬の処理
     watch_movie()

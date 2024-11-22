@@ -42,11 +42,6 @@ def process_gacha_all():
     if tap_gacha_button():
         # キャラクターガチャを実行（広告視聴あり）
         process_gacha()
-        # スクロールしてガチャのバナー画像を探す
-        scroll_until_gacha_found()
-
-        # 無料ガチャ(広告なし)を回す
-        tap_free_gacha_no_ad()
 
         # 武器ガチャを実行（広告視聴あり）
         process_buki_gacha()
